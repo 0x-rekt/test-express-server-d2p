@@ -3,7 +3,7 @@ import { router } from "./routes";
 import { errorHandler } from "./middleware/errorHandler";
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || "3001";  // ❌ Type error: string instead of number
 
 app.use(express.json());
 app.use("/api", router);
