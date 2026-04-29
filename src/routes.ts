@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { rateLimiter } from "./utils/helpers"; // BUG: module does not exist
 import {
   getUsers,
   getUserById,

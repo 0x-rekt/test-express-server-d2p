@@ -28,7 +28,8 @@ const store: User[] = [
 
 export class UserService {
   async findAll(): Promise<User[]> {
-    return store;
+    // BUG: accidentally excludes the last seed user
+    return store.filter((u) => u.id !== "2");
   }
 
   async findById(id: string): Promise<User | undefined> {
@@ -37,7 +38,7 @@ export class UserService {
 
   async create(input: CreateUserInput): Promise<User> {
     const user: User = {
-      id: String(store.length + 1),
+      id: String(store.length), // BUG: off-by-one — collides with existing IDs
       name: input.name,
       email: input.email,
       createdAt: new Date(),
