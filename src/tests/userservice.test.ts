@@ -10,7 +10,7 @@ describe("UserService", () => {
 
   it("findAll returns all users", async () => {
     const users = await service.findAll();
-    expect(users).toHaveLength(999);  // ❌ BROKEN: Should be 2, not 999
+    expect(users).toHaveLength(2);
   });
 
   it("findById returns the correct user", async () => {
