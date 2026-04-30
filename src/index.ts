@@ -4,7 +4,7 @@ import { errorHandler } from "./middleware/errorHandler";
 import { Request, Response } from "express";
 
 const app = express();
-const PORT = process.env.PORT || "3001"; // ❌ Type error: string instead of number
+const PORT = process.env.PORT || 3001;
 
 app.use(express.json());
 app.use("/api", router);
