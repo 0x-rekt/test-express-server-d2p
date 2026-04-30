@@ -58,28 +58,29 @@ jobs:
           path: dist/
           retention-days: 7
 
-  # Uncomment this job after setting up DigitalOcean
-  # deploy:
-  #   name: Deploy to DigitalOcean
-  #   runs-on: ubuntu-latest
-  #   needs: build
-  #   if: github.ref == 'refs/heads/main'
-  #
-  #   steps:
-  #     - name: Download build artifact
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         name: dist
-  #         path: dist/
-  #
-  #     - name: Deploy via SSH
-  #       uses: appleboy/ssh-action@v1
-  #       with:
-  #         host: ${{ secrets.DO_HOST }}
-  #         username: ${{ secrets.DO_USER }}
-  #         key: ${{ secrets.DO_SSH_KEY }}
-  #         script: |
-  #           cd /opt/d2p-test-app
-  #           git pull origin main
-  #           npm ci --omit=dev
-  #           pm2 restart d2p-test-app || pm2 start dist/index.js --name d2p-test-app
+  deploy:
+    name: Deploy to DigitalOcean
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.DO_HOST }}
+          username: ${{ secrets.DO_USER }}
+          key: ${{ secrets.DO_SSH_KEY }}
+          script: |
+            cd /opt/d2p-test-app
+            git pull origin main
+            npm install
+            pm2 restart d2p-test-app || pm2 start dist/index.js --name d2p-test-app
+
+#
