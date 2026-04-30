@@ -51,11 +51,18 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Upload build artifact
+      - name: Prepare deployment package
+        run: |
+          mkdir deploy
+          cp -r dist deploy
+          cp package.json deploy/
+          cp package-lock.json deploy/
+
+      - name: Upload deployment artifact
         uses: actions/upload-artifact@v4
         with:
-          name: dist
-          path: dist/
+          name: deploy-package
+          path: deploy/
           retention-days: 7
 
   deploy:
@@ -65,7 +72,23 @@ jobs:
     if: github.ref == 'refs/heads/main'
 
     steps:
-      - name: Deploy via SSH
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: deploy-package
+          path: deploy/
+
+      - name: Copy files to Droplet
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.DO_HOST }}
+          username: ${{ secrets.DO_USER }}
+          key: ${{ secrets.DO_SSH_KEY }}
+          passphrase: ${{ secrets.DO_SSH_PASSPHRASE }}
+          source: "deploy/*"
+          target: "/opt/d2p-test-app"
+
+      - name: Restart app on server
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.DO_HOST }}
@@ -73,11 +96,13 @@ jobs:
           key: ${{ secrets.DO_SSH_KEY }}
           passphrase: ${{ secrets.DO_SSH_PASSPHRASE }}
           script: |
-            export NVM_DIR="$HOME/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            cd /opt/d2p-test-app
-            git pull origin main
-            npm install
-            pm2 restart d2p-test-app || pm2 start dist/index.js --name d2p-test-app
+            set -e
 
-#
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+
+            cd /opt/d2p-test-app
+
+            npm install --omit=dev
+
+            pm2 restart d2p-test-app || pm2 start dist/index.js --name d2p-test-app
