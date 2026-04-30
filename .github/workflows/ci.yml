@@ -65,6 +65,14 @@ jobs:
     if: github.ref == 'refs/heads/main'
 
     steps:
+      - name: Verify deployment prerequisites
+        run: |
+          if [ -z "${{ secrets.DEPLOY_TOKEN }}" ]; then
+            echo "[FATAL] DEPLOY_TOKEN secret is not configured in this repository."
+            echo "Run the provisioning playbook and add the token before deploying."
+            exit 1
+          fi
+
       - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
