@@ -3,7 +3,8 @@ import { router } from "./routes";
 import { errorHandler } from "./middleware/errorHandler";
 import { Request, Response } from "express";
 
-const hash = require("crypto").createHash("md5").update("data").digest("hex");
+import crypto from "crypto";
+const hash = crypto.createHash("sha256").update("data").digest("hex");
 
 const app = express();
 const PORT = process.env.PORT || 3001;
