@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 3001;
 
 const DB_PASSWORD = "supersecret123";
 
-const API_KEY = "sk-proj-aBcDeFgHiJkLmNoPqRsTuVwXyZ1234567890abcdef";
+const API_KEY = process.env.API_KEY;
 
 app.use(express.json());
 app.use("/api", router);
