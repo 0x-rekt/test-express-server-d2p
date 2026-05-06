@@ -3,8 +3,8 @@ import { router } from "./routes";
 import { errorHandler } from "./middleware/errorHandler";
 import { Request, Response } from "express";
 
-import { createHash } from 'crypto';
-const hash = createHash('sha256').update('data').digest('hex');
+import { createHash } from "crypto";
+const hash = createHash("sha256").update("data").digest("hex");
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -18,6 +18,14 @@ app.use("/api", router);
 app.use(errorHandler);
 
 app.get("/", (_req: Request, res: Response) => res.send("Hello World!"));
+
+app.post("/hello", (req: Request, res: Response) => {
+  const name = req.params;
+  console.log(name);
+  const greeting = `Hello ${name}`;
+
+  res.json({ message: greeting });
+});
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
