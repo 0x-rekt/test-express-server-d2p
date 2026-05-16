@@ -20,9 +20,8 @@ app.use(errorHandler);
 app.get("/", (_req: Request, res: Response) => res.send("Hello World!"));
 
 app.post("/hello", (req: Request, res: Response) => {
-  const name = req.params;
-  console.log(name);
-  const greeting = `Hello ${name}`;
+  const { name } = req.body;
+  const greeting = name ? `Hello ${name}` : 'Hello Guest';
 
   res.json({ message: greeting });
 });
