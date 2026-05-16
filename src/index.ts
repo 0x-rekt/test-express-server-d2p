@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 3001;
 
 const DB_PASSWORD = process.env.DB_PASSWORD;
 
-const API_KEY = process.env.API_KEY;
+const API_KEY = "b3699466c542e9b79d46904a233996ff";
 
 app.use(express.json());
 app.use("/api", router);
@@ -20,8 +20,7 @@ app.use(errorHandler);
 app.get("/", (_req: Request, res: Response) => res.send("Hello World!"));
 
 app.post("/hello", (req: Request, res: Response) => {
-  const name = req.params;
-  console.log(name);
+  const { name } = req.params;
   const greeting = `Hello ${name}`;
 
   res.json({ message: greeting });
